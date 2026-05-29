@@ -7,7 +7,6 @@ pipeline {
     }
 
     stages {
-
         stage('Clone Code') {
             steps {
                 git branch: 'main',
@@ -17,26 +16,24 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE:$IMAGE_TAG .'
+                // Changed from sh to bat, and updated variable syntax to %VAR%
+                bat "docker build -t %DOCKER_IMAGE%:%IMAGE_TAG% ."
             }
         }
 
         stage('Push Docker Image') {
             steps {
-
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-
-                    sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-
-                    docker push $DOCKER_IMAGE:$IMAGE_TAG
-
+                    // Changed to bat and wrapped the multiline block in double quotes
+                    bat """
+                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                    docker push %DOCKER_IMAGE%:%IMAGE_TAG%
                     docker logout
-                    '''
+                    """
                 }
             }
         }
