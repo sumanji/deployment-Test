@@ -1,11 +1,12 @@
-from oracle23Ai import Oracle23AIDBConnection
+
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage,AIMessage,SystemMessage
-from main import message_
+from model import  message_
+from dotenv import load_dotenv
+
+load_dotenv()
 class ChatBot():
     def __init__(self):
-        db_conn = Oracle23AIDBConnection()
-        self.retriever = Oracle23AIDBConnection.retriever(db_conn)
         self.llm = ChatOpenAI(model_name="gpt-4o",temperature = 0 ,max_tokens=240)
 
 
@@ -53,8 +54,6 @@ class ChatBot():
                 messages.append(ai_message)  # ✅ append directly
 
             return "Thank You"
-if __name__ == '__main__':
-    cb = ChatBot()
-    cb.get_output()
+
 
 
